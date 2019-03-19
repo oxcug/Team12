@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     public ArmyController[] armies;
     public string displayName;
+    public TerritoryController selectedTerritory;
 
     // Start is called before the first frame update
     void Start()
@@ -17,5 +18,17 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         
+    }
+
+    private void OnMouseUp()
+    {
+        if (selectedTerritory.territory.highlightMode != TerritoryHighlightMode.PlayerSelected)
+        {
+            selectedTerritory.territory.highlightMode = TerritoryHighlightMode.PlayerSelected;
+        }
+        else
+        {
+            selectedTerritory.territory.highlightMode = TerritoryHighlightMode.PlayerHover;
+        }
     }
 }

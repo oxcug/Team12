@@ -21,13 +21,31 @@ public class TerritoryController : MonoBehaviour
         
     }
 
+    private void OnMouseUp()
+    {
+        if (territory.highlightMode != TerritoryHighlightMode.PlayerSelected)
+        {
+            territory.highlightMode = TerritoryHighlightMode.PlayerSelected;
+        }
+        else
+        {
+            territory.highlightMode = TerritoryHighlightMode.PlayerHover;
+        }
+    }
+
     private void OnMouseEnter()
     {
-        territory.highlightMode = TerritoryHighlightMode.PlayerHover;
+        if (territory.highlightMode != TerritoryHighlightMode.PlayerSelected)
+        {
+            territory.highlightMode = TerritoryHighlightMode.PlayerHover;
+        }
     }
 
     private void OnMouseExit()
     {
-        territory.highlightMode = TerritoryHighlightMode.None;
+        if (territory.highlightMode != TerritoryHighlightMode.PlayerSelected)
+        {
+            territory.highlightMode = TerritoryHighlightMode.None;
+        }
     }
 }

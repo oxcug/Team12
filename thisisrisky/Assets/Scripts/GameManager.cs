@@ -2,22 +2,32 @@
 
 public class GameManager : MonoBehaviour
 {
-    private const string Message = "Minimum players should be > 1.";
-    public PlayerController[] players;
-    public TerritoryController[] rootTerritories;
-    
+    private const string MinimumPlayersErrorMessage = "Minimum players should be > 1.";
+    public PlayerController[] Players;
+    public TerritoryController[] RootTerritories;
+    public Turn CurrentTurn;
+
+    private static GameManager _SharedMgr;
+    public static GameManager Shared()
+    {
+        return _SharedMgr;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        if (players.Length <= 1)
+        _SharedMgr = this;
+
+        // Validate players
+        if (Players.Length <= 1)
         {
-            Debug.LogError(Message);
+            Debug.LogError(MinimumPlayersErrorMessage);
         }
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-
+        // Initialize first turn
+        CurrentTurn = new Turn
+        {
+            player = Players[0]
+        };
     }
 }
