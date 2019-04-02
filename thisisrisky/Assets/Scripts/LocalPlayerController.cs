@@ -4,29 +4,57 @@ using UnityEngine;
 
 public class LocalPlayerController : PlayerController
 {
-    // Start is called before the first frame update
-    void Start()
+    public new void Update()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        base.Update();
     }
 
     private void OnMouseUp()
     {
-        if (GameManager.Shared().CurrentTurn.player == this) {
-            if (selectedTerritory.territory.highlightMode != TerritoryHighlightMode.PlayerSelected)
+        if (RiskGameManager.Shared().CurrentTurn.Player == this)
+        {
+            if (SelectedTerritory.Territory.highlightMode != TerritoryHighlightMode.PlayerSelected)
             {
-                selectedTerritory.territory.highlightMode = TerritoryHighlightMode.PlayerSelected;
+                SelectedTerritory.Territory.highlightMode = TerritoryHighlightMode.PlayerSelected;
             }
             else
             {
-                selectedTerritory.territory.highlightMode = TerritoryHighlightMode.PlayerHover;
+                SelectedTerritory.Territory.highlightMode = TerritoryHighlightMode.PlayerHover;
             }
+        }
+    }
+
+
+    private void OnMouseUp()
+    {
+        if (RiskGameManager.Shared().CurrentTurn.Player == this)
+        {
+            if (Territory.highlightMode != TerritoryHighlightMode.PlayerSelected)
+            {
+                Territory.highlightMode = TerritoryHighlightMode.PlayerSelected;
+                RiskGameManager.Shared().CurrentTurn.Player.SelectedTerritory = this;
+            }
+            else
+            {
+                Territory.highlightMode = TerritoryHighlightMode.PlayerHover;
+            }
+        }
+    }
+
+    private void OnMouseEnter()
+    {
+        if (Territory.highlightMode != TerritoryHighlightMode.PlayerSelected)
+        {
+            Territory.highlightMode = TerritoryHighlightMode.PlayerHover;
+        }
+    }
+
+    private void OnMouseExit()
+    {
+        if (Territory.highlightMode != TerritoryHighlightMode.PlayerSelected)
+        {
+            Territory.highlightMode = TerritoryHighlightMode.None;
+            RiskGameManager.Shared().CurrentTurn.Player.SelectedTerritory = this;
         }
     }
 }

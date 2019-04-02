@@ -4,48 +4,15 @@ using UnityEngine;
 
 public class TerritoryController : MonoBehaviour
 {
-    public Territory territory;
-    public TerritoryController[] adjacentTerritories;
-    public TerritoryController[] childTerritories;
-    public ArmyController army;
+    public Territory Territory;
+    public TerritoryController[] AdjacentTerritories;
+    public ArmyController Army;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        army.transform.position = transform.position;
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        
-    }
-
-    private void OnMouseUp()
-    {
-        if (territory.highlightMode != TerritoryHighlightMode.PlayerSelected)
+        if (Army)
         {
-            territory.highlightMode = TerritoryHighlightMode.PlayerSelected;
-        }
-        else
-        {
-            territory.highlightMode = TerritoryHighlightMode.PlayerHover;
-        }
-    }
-
-    private void OnMouseEnter()
-    {
-        if (territory.highlightMode != TerritoryHighlightMode.PlayerSelected)
-        {
-            territory.highlightMode = TerritoryHighlightMode.PlayerHover;
-        }
-    }
-
-    private void OnMouseExit()
-    {
-        if (territory.highlightMode != TerritoryHighlightMode.PlayerSelected)
-        {
-            territory.highlightMode = TerritoryHighlightMode.None;
+            Army.transform.position = transform.position;
         }
     }
 }
