@@ -23,38 +23,4 @@ public class LocalPlayerController : PlayerController
             }
         }
     }
-
-
-    private void OnMouseUp()
-    {
-        if (RiskGameManager.Shared().CurrentTurn.Player == this)
-        {
-            if (Territory.highlightMode != TerritoryHighlightMode.PlayerSelected)
-            {
-                Territory.highlightMode = TerritoryHighlightMode.PlayerSelected;
-                RiskGameManager.Shared().CurrentTurn.Player.SelectedTerritory = this;
-            }
-            else
-            {
-                Territory.highlightMode = TerritoryHighlightMode.PlayerHover;
-            }
-        }
-    }
-
-    private void OnMouseEnter()
-    {
-        if (Territory.highlightMode != TerritoryHighlightMode.PlayerSelected)
-        {
-            Territory.highlightMode = TerritoryHighlightMode.PlayerHover;
-        }
-    }
-
-    private void OnMouseExit()
-    {
-        if (Territory.highlightMode != TerritoryHighlightMode.PlayerSelected)
-        {
-            Territory.highlightMode = TerritoryHighlightMode.None;
-            RiskGameManager.Shared().CurrentTurn.Player.SelectedTerritory = this;
-        }
-    }
 }

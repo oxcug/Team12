@@ -6,13 +6,42 @@ public class TerritoryController : MonoBehaviour
 {
     public Territory Territory;
     public TerritoryController[] AdjacentTerritories;
-    public ArmyController Army;
 
     void Update()
     {
-        if (Army)
+    }
+
+
+    private void OnMouseEnter()
+    {
+        if (Territory.highlightMode != TerritoryHighlightMode.PlayerSelected)
         {
-            Army.transform.position = transform.position;
+            Territory.highlightMode = TerritoryHighlightMode.PlayerHover;
+        }
+    }
+
+    private void OnMouseDown()
+    {
+        if (Territory.highlightMode != TerritoryHighlightMode.PlayerSelected)
+        {
+            PlayerController player = RiskGameManager.Shared().CurrentTurn.Player;
+
+            if (player.SelectedTerritory == this)
+            {
+                player.SelectedTerritory = null;
+            }
+            else
+            {
+                player.SelectedTerritory = this;
+            }
+        }
+    }
+
+    private void OnMouseExit()
+    {
+        if (Territory.highlightMode != TerritoryHighlightMode.PlayerSelected)
+        {
+            Territory.highlightMode = TerritoryHighlightMode.None;
         }
     }
 }

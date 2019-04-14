@@ -11,11 +11,11 @@ public class PlayerController : MonoBehaviour
         get
         {
             List<ArmyController> tmp = new List<ArmyController>();
-            foreach (ArmyController item in tmp)
+            foreach (ArmyController item in Armies)
             {
-                if (item.Location)
+                if (item.Assignable)
                 {
-                    tmp.Remove(item);
+                    tmp.Add(item);
                 }
             }
 
@@ -28,11 +28,11 @@ public class PlayerController : MonoBehaviour
         get
         {
             List<ArmyController> tmp = new List<ArmyController>();
-            foreach (ArmyController item in tmp)
+            foreach (ArmyController item in Armies)
             {
-                if (!item.Location)
+                if (!item.Assignable)
                 {
-                    tmp.Remove(item);
+                    tmp.Add(item);
                 }
             }
 
@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Cannot place army!");
+            Debug.LogWarning("Cannot place army, no units available!\n# of Total Troops: " + Armies.Length + "\n# of Unassigned Troops: " + UnassignedArmies.Length + "\n# of Assigned Troops: " + AssignedArmies.Length);
             return false;
         }
     }

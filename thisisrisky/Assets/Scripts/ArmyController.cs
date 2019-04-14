@@ -4,8 +4,17 @@ using UnityEngine;
 
 public class ArmyController : MonoBehaviour
 {
-    public Army Platoon;
+    public Army Troop;
+
     public TerritoryController Location;
+
+    public bool Assignable
+    {
+        get
+        {
+            return Location == null;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -16,6 +25,9 @@ public class ArmyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (Location)
+        {
+            transform.position = Location.transform.position;
+        }
     }
 }

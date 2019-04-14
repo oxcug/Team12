@@ -29,20 +29,23 @@ public class Turn : Object
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public Turn()
     {
         Completed = false;
     }
 
     // Update is called once per frame
-    void Update()
+    public void Update()
     {
         if (Player.SelectedTerritory)
         {
             if (RiskGameManager.Shared().CurrentGameState() == RiskGameManager.GameState.ChooseTerritories)
             {
+                // if the user has selected their territory, advance the game state.
+                Player.PlaceUnassignedArmyAtTerritory(Player.SelectedTerritory);
+                Player.SelectedTerritory = null; // reset the player selected territory after turn is finished.
                 Completed = true;
+                Debug.Log("Assigned Army to territory " + Player.SelectedTerritory + " for player " + Player);
             }
             else
             {

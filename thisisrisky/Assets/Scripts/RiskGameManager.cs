@@ -80,7 +80,7 @@ public class RiskGameManager : MonoBehaviour
 
             // increment the current player index (looping where necessary)
             _CurrentPlayerIndex++;
-            if (_CurrentPlayerIndex > Players.Length)
+            if (_CurrentPlayerIndex >= Players.Length)
             {
                 _CurrentPlayerIndex = 0;
             }
@@ -92,6 +92,10 @@ public class RiskGameManager : MonoBehaviour
             {
                 Player = nextPlayer
             };
+        }
+        else
+        {
+            CurrentTurn.Update();
         }
 
         // Perform GUI Updates
