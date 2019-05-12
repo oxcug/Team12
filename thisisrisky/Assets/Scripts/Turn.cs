@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Turn : Object
+public class Turn
 { 
     
     public enum PlayerState
@@ -11,7 +11,7 @@ public class Turn : Object
         Foritfy
     }
     
-    public PlayerController Player;
+    public PlayerController Player { get; private set; }
 
     public bool Completed;
 
@@ -23,15 +23,30 @@ public class Turn : Object
         {
             return PlayerState.ChooseTerritory;
         }
-        else
+        else if (Player.UnassignedArmies.Length > 0)
         {
             return PlayerState.Reinforce;
         }
+        else if (Player.Reinforcing)
+        {
+            return PlayerState.Attack;
+        }
+        else
+        {
+            return PlayerState.Foritfy;
+        }
     }
 
-    public Turn()
+    public Turn(PlayerController playerController)
     {
+        Player = playerController;
         Completed = false;
+
+        // if this is a reinforce turn, then distribute the bonus armies
+        if (CurrentPlayerState() == PlayerState.Reinforce)
+        {
+            Player.AddArmies(BonusArmyValueFromContinents + NormalArmyValueFromOwnedTerritories);
+        }
     }
 
     // Update is called once per frame
@@ -39,17 +54,62 @@ public class Turn : Object
     {
         if (Player.SelectedTerritory)
         {
-            if (RiskGameManager.Shared().CurrentGameState() == RiskGameManager.GameState.ChooseTerritories)
+            switch (CurrentPlayerState())
             {
-                // if the user has selected their territory, advance the game state.
-                Player.PlaceUnassignedArmyAtTerritory(Player.SelectedTerritory);
-                Player.SelectedTerritory = null; // reset the player selected territory after turn is finished.
-                Completed = true;
-                Debug.Log("Assigned Army to territory " + Player.SelectedTerritory + " for player " + Player);
+                case PlayerState.ChooseTerritory:
+                    // During the choose territory phase, all players have "infinite" armies until the map is full.
+                    if (Player.UnassignedArmies.Length == 0)
+                    {
+                        Player.AddArmies(1);
+                    }
+
+                    // fallthrough to placing logic...
+                    goto case PlayerState.Reinforce;
+
+                case PlayerState.Reinforce:
+
+                    // if the user has selected their territory, advance the game state.
+                    if (Player.PlaceUnassignedArmyAtTerritory(Player.SelectedTerritory))
+                    {
+                        // reset the player selected territory after turn is finished.
+                        Player.SelectedTerritory = null;
+                        Completed = true;
+                        Debug.Log("Assigned Army to territory " + Player.SelectedTerritory + " for player " + Player);
+                    }
+                    break;
+                    
+                case PlayerState.Attack:
+                    break;
+                case PlayerState.Foritfy:
+                    break;
             }
-            else
+        }
+        else
+        {
+
+        }
+    }
+
+    private uint BonusArmyValueFromContinents
+    {
+        get
+        {
+            uint total = 0;
+
+            foreach (Continent continent in Player.OwnedContinents)
             {
+                total += continent.BonusValue;
             }
+
+            return total;
+        }
+    }
+
+    private uint NormalArmyValueFromOwnedTerritories
+    {
+        get
+        {
+            return (uint)Mathf.Floor(Player.OwnedTerritories.Length / 3);
         }
     }
 }

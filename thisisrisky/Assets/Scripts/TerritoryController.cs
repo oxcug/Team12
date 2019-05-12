@@ -7,10 +7,26 @@ public class TerritoryController : MonoBehaviour
     public Territory Territory;
     public TerritoryController[] AdjacentTerritories;
 
-    void Update()
+    public bool Occupied
     {
+        get
+        {
+            return RiskGameManager.Shared().LookupOccuantForTerritory(this) != null;
+        }
     }
 
+    public PlayerController Player
+    {
+        get
+        {
+            return RiskGameManager.Shared().LookupOccuantForTerritory(this).Player;
+        }
+    }
+
+    private void Start()
+    {
+        RiskGameManager.Shared().RegisterTerritory(this);
+    }
 
     private void OnMouseEnter()
     {
