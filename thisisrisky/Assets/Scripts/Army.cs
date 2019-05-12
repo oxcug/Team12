@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Army : Object
+public class Army
 {
     public uint Value { get; private set; }
 

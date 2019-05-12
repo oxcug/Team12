@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class ArmyController : MonoBehaviour
 {
-    public Army Troop;
+    Army Troop;
 
     public TerritoryController Location;
+
+    public PlayerController Player;
 
     public bool Assignable
     {
@@ -17,17 +19,22 @@ public class ArmyController : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-
+        RiskGameManager.Shared().RegisterArmy(this);
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (Location)
         {
             transform.position = Location.transform.position;
         }
+    }
+
+    private void OnDestroy()
+    {
+        RiskGameManager.Shared().UnregisterArmy(this);
     }
 }

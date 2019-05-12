@@ -22,7 +22,6 @@ public class Territory : MonoBehaviour
         spriteRendererHighlightColor = Color.green;
         spriteRendererSelectedColor = Color.blue;
         originalSpriteRendererColor = spriteRenderer.color;
-
     }
 
     // Update is called once per frame

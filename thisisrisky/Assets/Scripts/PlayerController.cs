@@ -4,8 +4,18 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public ArmyController[] Armies;
+    private List<ArmyController> UnderlyingArmies = new List<ArmyController>();
 
+    public ArmyController[] Armies
+    {
+        get
+        {
+            return UnderlyingArmies.ToArray();
+        }
+    }
+
+    public bool Reinforcing { get; private set; }
+    
     public ArmyController[] UnassignedArmies
     {
         get
@@ -40,6 +50,52 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public TerritoryController[] OwnedTerritories
+    {
+        get
+        {
+            List<TerritoryController> tmp = new List<TerritoryController>();
+            foreach (ArmyController army in AssignedArmies)
+            {
+                if (!tmp.Contains(army.Location))
+                {
+                    tmp.Add(army.Location);
+                }
+            }
+
+            return tmp.ToArray();
+        }
+    }
+
+    public Continent[] OwnedContinents
+    {
+        get
+        {
+            List<Continent> ownedContinents = new List<Continent>();
+
+            foreach (Continent continent in RiskGameManager.Shared().AllContinents)
+            {
+                foreach (TerritoryController tc in continent.ChildTerritories)
+                {
+                    if (tc.Player != this)
+                    {
+                        break;
+                    }
+                }
+
+                ownedContinents.Add(continent);
+            }
+
+            return ownedContinents.ToArray();
+        }
+    }
+
+    public void AddArmies(uint value)
+    {
+        ArmyController[] unassignedArmies = InstantiateNewArmies(value + (uint)UnassignedArmies.Length);
+        UnderlyingArmies.AddRange(unassignedArmies);
+    }
+
     public bool OwnsCurrentTurn()
     {
         return RiskGameManager.Shared().CurrentTurn.Player == this;
@@ -70,9 +126,32 @@ public class PlayerController : MonoBehaviour
     public void Update()
     {
         // Make sure all unassigned armies are inactive, and all assigned ones are active.
-        foreach (ArmyController army in Armies)
+        if (Armies != null && Armies.Length > 0)
         {
-            army.gameObject.SetActive(army.Location != null);
+            foreach (ArmyController army in Armies)
+            {
+                army.gameObject.SetActive(army.Location != null);
+            }
         }
+    }
+
+    /// <summary>
+    /// Creates an array of cloned GameObjects of armies.
+    /// </summary>
+    /// <param name="count">The number of armies to clone.</param>
+    /// <returns>An array of armies with the given count.</returns>
+    private ArmyController[] InstantiateNewArmies(uint count)
+    {
+        List<ArmyController> defaultArmies = new List<ArmyController>();
+
+        for (int i = 0; i < count; ++i)
+        {
+            GameObject basicArmyCopy = Instantiate<GameObject>(RiskGameManager.Shared().PrefabBasicArmy);
+            ArmyController army = basicArmyCopy.GetComponent<ArmyController>();
+            army.Player = this;
+            defaultArmies.Add(army);
+        }
+
+        return defaultArmies.ToArray();
     }
 }
